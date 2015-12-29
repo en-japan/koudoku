@@ -5,6 +5,8 @@ Koudoku.setup do |config|
   
   Stripe.api_version = '2015-10-16' #Making sure the API version used is compatible.
   # config.prorate = false # Default is true, set to false to disable prorating subscriptions
+  # config.prorate_for_downgrade = false # Default is true, set to false to disable prorating subscriptions when upgrading
+  # config.prorate_for_upgrade  = false # Default is true, set to false to disable prorating subscriptions when downgrading
   # config.free_trial_length = 30
 
   # Specify layout you want to use for the subscription pages, default is application
