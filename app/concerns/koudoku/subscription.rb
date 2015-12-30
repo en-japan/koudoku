@@ -51,7 +51,9 @@ module Koudoku::Subscription
             self.current_price = nil
 
             # delete the subscription.
-            customer.cancel_subscription(cancel_at_period_end ? {at_period_end: true} : {})
+            if sub = customer.subscriptions.first
+              sub.delete(cancel_at_period_end ? {at_period_end: true} : {})
+            end
 
             finalize_cancelation!
 
