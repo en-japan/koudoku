@@ -19,7 +19,12 @@ module Koudoku
   mattr_accessor :prorate
   @@prorate = true
 
+  mattr_accessor :prorate_for_downgrade
+  @@prorate_for_downgrade = true
   
+  mattr_accessor :prorate_for_upgrade
+  @@prorate_for_upgrade = true
+
   @@layout = nil
   
   def self.layout
