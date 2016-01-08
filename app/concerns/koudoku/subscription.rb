@@ -37,6 +37,7 @@ module Koudoku::Subscription
             if sub = customer.subscriptions.first
               sub.prorate = Koudoku.prorate || (upgrading? ? Koudoku.prorate_for_upgrade : Koudoku.prorate_for_downgrade)
               sub.plan = self.plan.stripe_id
+              sub.tax_percent = subscription_owner.tax_percent(customer) if subscription_owner.respond_to?(:tax_percent)
               sub.save
             end
             finalize_downgrade! if downgrading?
@@ -91,8 +92,11 @@ module Koudoku::Subscription
               customer = Stripe::Customer.create(customer_attributes)
 
               finalize_new_customer!(customer.id, plan.price)
-              customer.subscriptions.create(plan: self.plan.stripe_id,
-                                            prorate: Koudoku.prorate)
+              customer.subscriptions.create({plan: self.plan.stripe_id,
+                                            prorate: Koudoku.prorate}.merge(
+                                              subscription_owner.respond_to?(:tax_percent) ?
+                                              { tax_percent: subscription_owner.tax_percent(customer) } : {}
+                                            ))
 
             rescue Stripe::CardError => card_error
               errors[:base] << card_error.message
