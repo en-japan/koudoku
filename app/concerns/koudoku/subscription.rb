@@ -175,7 +175,11 @@ module Koudoku::Subscription
   end
 
   def changing_plans?
-    plan_id_changed?
+    plan_id_changed? || (
+      customer = Stripe::Customer.retrieve(self.stripe_id)
+      sub = customer.subscriptions.first
+      sub.canceled_at && subscription_owner.next_plan.nil?
+    )
   end
 
   def downgrading?
